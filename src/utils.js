@@ -1,41 +1,46 @@
-export function drawImage(ctx, percentage) {
-  const images = getImages();
+function drawImage(canvas, image) {
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(image, 0, 0, window.innerWidth, window.innerHeight);
+}
+
+export function calculateWhichImageToDrawAndDrawIt(canvas, images) {
+  const scrollTop = Math.max(
+    window.pageYOffset,
+    document.documentElement.scrollTop,
+    document.body.scrollTop
+  );
+
+  const scrollCoefficient = 3;
+
+  const scrollPercentage =
+    (scrollTop * scrollCoefficient) / window.innerHeight / 1.5;
+
   const numberOfFrames = images.length;
-  const index = Math.round(numberOfFrames * percentage) || 0;
+  const index = Math.round(numberOfFrames * scrollPercentage) || 0;
 
   if (images[index]) {
-    const image = images[index];
-    console.log("Drawing image...");
-    ctx.drawImage(image, 0, 0, window.innerWidth, window.innerHeight);
+    drawImage(canvas, images[index]);
   }
 }
 
-export function initialize(canvas) {
-  const initialImage = getImages()[0];
+export function initialize(canvas, images) {
+  const initialImage = images[0];
   const ctx = canvas.getContext("2d");
   ctx.imageSmoothingEnabled = true;
 
   initialImage.onload = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    ctx.drawImage(initialImage, 0, 0, window.innerWidth, window.innerHeight);
+    drawImage(canvas, initialImage);
   };
 }
 
 function createImage(src) {
   const image = new Image();
   image.src = src;
-
   return image;
 }
 
-function getImages() {
+export function getImageObjects() {
   return [...Array(101).keys()].map((_, index) =>
     createImage(`/img/${index}.jpg`)
   );
-}
-
-export function scrubThroughFrames(canvas, percentage) {
-  const ctx = canvas.getContext("2d");
-  drawImage(ctx, percentage);
 }

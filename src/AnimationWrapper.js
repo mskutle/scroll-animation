@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import useWindowSize from "./useWindowWidth";
+import useWindowSize from "./useWindowSize";
 
 const imageWidth = 1920;
 const imageHeight = 1080;

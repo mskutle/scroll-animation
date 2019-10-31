@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import useWindowSize from "./useWindowWidth";
-import { scrubThroughFrames, initialize } from "./utils";
+import useWindowSize from "./useWindowSize";
+import { initialize } from "./utils";
 
 const scrollCoefficient = 3;
 
@@ -14,9 +14,10 @@ function Animation() {
       document.documentElement.scrollTop,
       document.body.scrollTop
     );
+
     const scrollPercentage =
       (scrollTop * scrollCoefficient) / windowHeight / 1.5;
-    scrubThroughFrames(canvasRef.current, scrollPercentage);
+    // scrubThroughFrames(canvasRef.current, scrollPercentage);
   };
 
   useEffect(() => {

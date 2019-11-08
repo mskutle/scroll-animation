@@ -54,6 +54,6 @@ function createImage(src) {
 
 export function getImageObjects() {
   return [...Array(201).keys()].map((_, index) =>
-    createImage(`/xmas-tree/${index}.jpg`)
+    createImage(`/xmas-tree/v2/${index}.jpg`)
   );
 }

@@ -1,54 +1,44 @@
-export const createCanvasManager = canvas => {
-  const ctx = canvas.getContext("2d");
-
-  const getImageObjects = () => {
-    return [...Array(101).keys()].map((_, index) =>
-      createImage(`/img/${index}.jpg`)
-    );
-  };
-
-  const images = getImageObjects();
-
-  const initializeCanvas = () => {
-    const initialImage = images[0];
-    ctx.imageSmoothingEnabled = true;
-
-    initialImage.onload = () => {
-      drawImage(initialImage);
-    };
-  };
-
-  const createImage = src => {
-    const image = new Image();
-    image.src = src;
-    return image;
-  };
-
-  const drawImage = image =>
-    ctx.drawImage(image, 0, 0, window.innerWidth, window.innerHeight);
-
-  const calculateWhichImageToDrawAndDrawIt = () => {
-    const scrollTop = Math.max(
+export const create = (
+  canvas,
+  options = {
+    images: [],
+    width: window.innerWidth,
+    height: window.innerHeight,
+    scrollCoefficient: 3,
+    scrollTop: Math.max(
       window.pageYOffset,
       document.documentElement.scrollTop,
       document.body.scrollTop
-    );
+    )
+  }
+) => {
+  const ctx = canvas.getContext("2d");
 
-    const scrollCoefficient = 3;
+  const drawImage = image => {
+    ctx.drawImage(image, 0, 0, options.width, options.height);
+  };
 
+  const init = () => {
+    canvas.width = options.width;
+    canvas.height = options.height;
+    const initialImage = options.images[0];
+    initialImage.onload = () => drawImage(initialImage);
+  };
+
+  const calculateWhichImageToDrawAndDrawIt = () => {
     const scrollPercentage =
-      (scrollTop * scrollCoefficient) / window.innerHeight / 1.5;
+      (options.scrollTop * options.scrollCoefficient) / options.height / 1.5;
 
-    const numberOfFrames = images.length;
+    const numberOfFrames = options.images.length;
     const index = Math.round(numberOfFrames * scrollPercentage) || 0;
 
-    if (images[index]) {
-      drawImage(images[index]);
+    if (options.images[index]) {
+      drawImage(options.images[index]);
     }
   };
 
   return {
-    calculateWhichImageToDrawAndDrawIt,
-    initializeCanvas
+    init,
+    calculateWhichImageToDrawAndDrawIt
   };
 };

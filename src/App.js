@@ -1,17 +1,22 @@
-import React from "react";
+import React, { useRef } from "react";
+import { Parallax, ParallaxLayer } from "react-spring/renderprops-addons";
 import "./App.css";
-import Animation from "./Animation";
-import AnimationWrapper from "./AnimationWrapper";
+import CanvasWrapper from "./CanvasWrapper";
 import useWindowSize from "./useWindowSize";
 import Canvas from "./Canvas";
+import { getImageObjects } from "./utils";
 
 function App() {
-  const [_, windowHeight] = useWindowSize();
+  const [windowWidth, windowHeight] = useWindowSize();
   return (
-    <div className="App" style={{ height: windowHeight * 1.5 }}>
-      <AnimationWrapper>
-        <Canvas />
-      </AnimationWrapper>
+    <div className="app" style={{ height: window.innerHeight * 1.5 }}>
+      <CanvasWrapper>
+        <Canvas
+          images={getImageObjects()}
+          width={windowWidth}
+          height={windowHeight}
+        />
+      </CanvasWrapper>
     </div>
   );
 }

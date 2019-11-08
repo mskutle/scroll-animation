@@ -1,35 +1,48 @@
-function drawImage(canvas, image) {
+function drawImage({
+  canvas,
+  image,
+  height = image.height,
+  width = image.width
+}) {
   const ctx = canvas.getContext("2d");
-  ctx.drawImage(image, 0, 0, window.innerWidth, window.innerHeight);
+  ctx.drawImage(image, 0, 0, width, height);
 }
 
-export function calculateWhichImageToDrawAndDrawIt(canvas, images) {
+export function calculateWhichImageToDrawAndDrawIt({
+  canvas,
+  height = window.innerHeight,
+  width = window.innerWidth,
+  images,
+  scrollCoefficient = 3
+}) {
   const scrollTop = Math.max(
     window.pageYOffset,
     document.documentElement.scrollTop,
     document.body.scrollTop
   );
 
-  const scrollCoefficient = 3;
-
-  const scrollPercentage =
-    (scrollTop * scrollCoefficient) / window.innerHeight / 1.5;
+  const scrollPercentage = (scrollTop * scrollCoefficient) / height / 1.5;
 
   const numberOfFrames = images.length;
   const index = Math.round(numberOfFrames * scrollPercentage) || 0;
 
   if (images[index]) {
-    drawImage(canvas, images[index]);
+    drawImage({ canvas, image: images[index], width, height });
   }
 }
 
-export function initialize(canvas, images) {
+export function initialize({
+  canvas,
+  images,
+  height = window.innerHeight,
+  width = window.innerWidth
+}) {
   const initialImage = images[0];
   const ctx = canvas.getContext("2d");
   ctx.imageSmoothingEnabled = true;
 
   initialImage.onload = () => {
-    drawImage(canvas, initialImage);
+    drawImage({ canvas, image: initialImage, width, height });
   };
 }
 
@@ -40,7 +53,7 @@ function createImage(src) {
 }
 
 export function getImageObjects() {
-  return [...Array(101).keys()].map((_, index) =>
-    createImage(`/img/${index}.jpg`)
+  return [...Array(201).keys()].map((_, index) =>
+    createImage(`/xmas-tree/${index}.jpg`)
   );
 }

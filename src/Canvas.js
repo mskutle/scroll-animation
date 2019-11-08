@@ -1,31 +1,32 @@
-import React, { useRef, useState, useEffect } from "react";
-import {
-  initialize,
-  getImageObjects,
-  calculateWhichImageToDrawAndDrawIt
-} from "./utils";
-import useWindowSize from "./useWindowSize";
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import { initialize, calculateWhichImageToDrawAndDrawIt } from "./utils";
 
-function Canvas() {
-  const [windowWidth, windowHeight] = useWindowSize();
-  const [images] = useState(getImageObjects());
+function Canvas(props) {
+  const { width, height, ...rest } = props;
   const ref = useRef();
 
-  const handleScroll = e => {
-    const canvas = ref.current;
-    calculateWhichImageToDrawAndDrawIt(canvas, images);
-  };
+  const handleScroll = useCallback(
+    e => {
+      const canvas = ref.current;
+      calculateWhichImageToDrawAndDrawIt({ canvas, images: props.images });
+    },
+    [props.images]
+  );
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [handleScroll]);
 
   useEffect(() => {
-    initialize(ref.current, images);
-  }, [images]);
+    const canvas = ref.current;
+    canvas.width = width;
+    canvas.height = height;
 
-  return <canvas ref={ref} height={windowHeight} width={windowWidth} />;
+    initialize({ canvas, images: props.images });
+  }, [props.images, width, height]);
+
+  return <canvas ref={ref} {...rest} />;
 }
 
 export default Canvas;
